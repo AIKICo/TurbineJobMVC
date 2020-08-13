@@ -48,7 +48,7 @@ namespace TurbineJobMVC.Models
             modelBuilder.ApplyConfiguration<WorkOrderDailyReportTBL>(new WorkOrderDailyReportTBLConfigure());
         }
 
-        public override void OnScopeSaving(AuditScope auditScope)
+        public override void OnScopeSaving(IAuditScope auditScope)
         {
             _logger.LogInformation("Audit event recorded: {event}", new
             {
