@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 using TurbineJobMVC.Models.Entities;
 
 namespace TurbineJobMVC.Models.EntitiesConfigure
@@ -11,7 +10,7 @@ namespace TurbineJobMVC.Models.EntitiesConfigure
         {
             builder.HasKey(x => x.ReportID);
             builder.Property(x => x.ReportComment).HasMaxLength(4000);
-            builder.HasQueryFilter(x => !String.IsNullOrEmpty(x.ReportComment));
+            builder.HasQueryFilter(x => !string.IsNullOrEmpty(x.ReportComment));
         }
     }
 }

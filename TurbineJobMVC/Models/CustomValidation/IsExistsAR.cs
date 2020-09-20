@@ -7,17 +7,14 @@ namespace TurbineJobMVC.Models.CustomValidation
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value == null) return new ValidationResult(!string.IsNullOrEmpty(ErrorMessage) ? ErrorMessage : "شماره اموال وجود ندارد");
-            var db = (PCStockDBContext)validationContext.GetService(typeof(PCStockDBContext));
+            if (value == null)
+                return new ValidationResult(!string.IsNullOrEmpty(ErrorMessage)
+                    ? ErrorMessage
+                    : "شماره اموال وجود ندارد");
+            var db = (PCStockDBContext) validationContext.GetService(typeof(PCStockDBContext));
             if (db.TahvilForms.Any(q => q.AmvalNo.ToString() == value.ToString()))
-            {
                 return ValidationResult.Success;
-            }
-            else
-            {
-                return new ValidationResult(!string.IsNullOrEmpty(ErrorMessage) ? ErrorMessage : "شماره اموال وجود ندارد");
-            }
+            return new ValidationResult(!string.IsNullOrEmpty(ErrorMessage) ? ErrorMessage : "شماره اموال وجود ندارد");
         }
-
     }
 }

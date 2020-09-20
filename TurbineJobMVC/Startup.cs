@@ -1,3 +1,10 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using DNTCaptcha.Core;
@@ -5,29 +12,21 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
 using Raven.Client.Documents;
 using Raven.Client.Http;
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Context;
+using Serilog.Debugging;
 using TurbineJobMVC.AutoMapperSettings;
 using TurbineJobMVC.BuilderExtensions;
 using TurbineJobMVC.Models;
@@ -38,6 +37,8 @@ namespace TurbineJobMVC
 {
     public class Startup
     {
+        private X509Certificate2 logServerCertificate;
+
         public Startup(
             IConfiguration configuration,
             IHostEnvironment host)
@@ -48,14 +49,13 @@ namespace TurbineJobMVC
 
         public IConfiguration Configuration { get; }
         private IHostEnvironment hostEnvironment { get; }
-        private X509Certificate2 logServerCertificate;
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDetection();
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
-            services.AddCors(options=>
+            services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
                 {
@@ -95,22 +95,22 @@ namespace TurbineJobMVC
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
 
             services.AddScoped<IWorkOrderService, WorkOrderService>();
             services.AddScoped<IDateTimeService, DateTimeService>();
@@ -118,7 +118,7 @@ namespace TurbineJobMVC
             services.AddScoped<IUserService, UserService>();
             services.AddHttpContextAccessor();
             services.AddControllersWithViews()
-                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
@@ -134,6 +134,7 @@ namespace TurbineJobMVC
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseResponseCompression();
             app.UseStaticFiles(new StaticFileOptions
@@ -147,10 +148,7 @@ namespace TurbineJobMVC
                     var headers = ctx.Context.Response.Headers;
                     var contentType = headers["Content-Type"];
 
-                    if (contentType != "application/x-gzip" && !ctx.File.Name.EndsWith(".gz"))
-                    {
-                        return;
-                    }
+                    if (contentType != "application/x-gzip" && !ctx.File.Name.EndsWith(".gz")) return;
 
                     var fileNameToTry = ctx.File.Name.Substring(0, ctx.File.Name.Length - 3);
 
@@ -161,28 +159,31 @@ namespace TurbineJobMVC
             });
             if (Convert.ToBoolean(Configuration.GetSection("RavenDBSettings:Enabled").Value))
             {
-                Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg));
-                Serilog.Debugging.SelfLog.Enable(Console.Error);
+                SelfLog.Enable(msg => Debug.WriteLine(msg));
+                SelfLog.Enable(Console.Error);
 
-                Log.Logger  = new LoggerConfiguration()
+                Log.Logger = new LoggerConfiguration()
                     .Enrich.FromLogContext()
                     .MinimumLevel.Debug()
                     .WriteTo.Console()
-                    .WriteTo.RavenDB(CreateRavenDocStore(),errorExpiration:TimeSpan.FromDays(90))
+                    .WriteTo.RavenDB(CreateRavenDocStore(), errorExpiration: TimeSpan.FromDays(90))
                     .CreateLogger();
-                app.Use(async (httpContext, next) =>  
-                {  
-                    var username = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "anonymous";  
-                    LogContext.PushProperty("User", username);  
+                app.Use(async (httpContext, next) =>
+                {
+                    var username = httpContext.User.Identity.IsAuthenticated
+                        ? httpContext.User.Identity.Name
+                        : "anonymous";
+                    LogContext.PushProperty("User", username);
                     var ip = httpContext.Connection.RemoteIpAddress.ToString();
-                    LogContext.PushProperty("IP", !String.IsNullOrWhiteSpace(ip) ? ip : "unknown");  
-                  
-                    await next.Invoke();  
-                });  
-            
+                    LogContext.PushProperty("IP", !string.IsNullOrWhiteSpace(ip) ? ip : "unknown");
+
+                    await next.Invoke();
+                });
+
                 loggerFactory.AddSerilog();
                 Log.Information("Startup");
             }
+
             app.UseSession();
             app.UseResponseCaching();
             app.UseStatusCodePagesWithRedirects("/Home/Error");
@@ -193,27 +194,27 @@ namespace TurbineJobMVC
             app.UseCheckBrowserMiddleware();
             app.UseSitemapMiddleware();
             app.UseRobotsTxt(builder =>
-            builder
-                .AddSection(section =>
-                    section
-                        .AddComment("Allow Googlebot")
-                        .AddUserAgent("Googlebot")
-                        .Allow("/")
+                builder
+                    .AddSection(section =>
+                        section
+                            .AddComment("Allow Googlebot")
+                            .AddUserAgent("Googlebot")
+                            .Allow("/")
                     )
-                .AddSection(section =>
-                    section
-                        .AddComment("Disallow the rest")
-                        .AddUserAgent("*")
-                        .AddCrawlDelay(TimeSpan.FromSeconds(10))
-                        .Allow("/")
-                ));
+                    .AddSection(section =>
+                        section
+                            .AddComment("Disallow the rest")
+                            .AddUserAgent("*")
+                            .AddCrawlDelay(TimeSpan.FromSeconds(10))
+                            .Allow("/")
+                    ));
             //.AddSitemap($"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/sitemap.xml"));
             app.UseSerilogRequestLogging();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    "default",
+                    "{controller=Home}/{action=Index}/{id?}");
             });
         }
 
@@ -231,7 +232,7 @@ namespace TurbineJobMVC
                         "Mveyma6303$");
             var docStore = new DocumentStore
             {
-                Urls = new[] { Configuration.GetSection("RavenDBSettings:Server").Value },
+                Urls = new[] {Configuration.GetSection("RavenDBSettings:Server").Value},
                 Database = Configuration.GetSection("RavenDBSettings:CollectionName").Value,
                 Certificate = logServerCertificate
             };
@@ -239,7 +240,8 @@ namespace TurbineJobMVC
             return docStore;
         }
 
-        private static bool CertificateCallback(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors errors)
+        private static bool CertificateCallback(object sender, X509Certificate cert, X509Chain chain,
+            SslPolicyErrors errors)
         {
             return true;
         }

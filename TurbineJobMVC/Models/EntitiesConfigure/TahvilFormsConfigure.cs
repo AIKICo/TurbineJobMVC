@@ -8,7 +8,7 @@ namespace TurbineJobMVC.Models.EntitiesConfigure
         public override void Configure(EntityTypeBuilder<TahvilForms> builder)
         {
             base.Configure(builder);
-            builder.HasQueryFilter(q => q.TypeTahvil != 4 & q.AmvalNo != 0);
+            builder.HasQueryFilter(q => (q.TypeTahvil != 4) & (q.AmvalNo != 0));
         }
     }
 }

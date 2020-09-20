@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TurbineJobMVC.Services;
@@ -17,8 +12,8 @@ namespace TurbineJobMVC.Controllers
     {
         protected readonly ILogger<HomeController> _logger;
         protected readonly IMapper _map;
-        protected readonly IService _service;
         protected readonly IDataProtectionProvider _provider;
+        protected readonly IService _service;
         protected readonly IUserService _userService;
 
         public BaseApiController(

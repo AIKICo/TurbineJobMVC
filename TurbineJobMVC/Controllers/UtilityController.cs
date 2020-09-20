@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TurbineJobMVC.Services;
@@ -21,7 +17,9 @@ namespace TurbineJobMVC.Controllers
             IService service,
             IDataProtectionProvider provider,
             IUserService userService)
-        : base(logger, map, service, provider, userService) { }
+            : base(logger, map, service, provider, userService)
+        {
+        }
 
         [HttpGet("GetServerDate")]
         public ActionResult<DateTime> GetServerDate()

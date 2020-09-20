@@ -1,4 +1,4 @@
-﻿@inject IService  _service
+﻿@inject IService _service
 @model JobViewModel
 
 @{
@@ -14,7 +14,9 @@
                             <div class="form-group ">
                                 <div class="input-group mb-3  ">
                                     <div class="input-group-prepend ">
-                                        <label class="input-group-text" id="basic-addon1"><i class="fas fa-lg fa-desktop"></i></label>
+                                        <label class="input-group-text" id="basic-addon1">
+                                            <i class="fas fa-lg fa-desktop"></i>
+                                        </label>
                                     </div>
                                     @if (Model != null && Model.defaultAR)
                                     {
@@ -30,7 +32,9 @@
                             <div class="form-group ">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" id="basic-addon1"><i class="fas fa-lg fa-th-list"></i></label>
+                                        <label class="input-group-text" id="basic-addon1">
+                                            <i class="fas fa-lg fa-th-list"></i>
+                                        </label>
                                     </div>
                                     @if (Model != null && Model.defaultDes)
                                     {
@@ -38,7 +42,6 @@
                                     }
                                     else
                                     {
-
                                         <textarea type="text" id="1AR" class="form-control textInputColor " asp-for="Description" placeholder="شرح درخواست را وارد کنید" aria-label="Description" aria-describedby="basic-addon1" rows="8"></textarea>
                                     }
 
@@ -48,7 +51,9 @@
                             <div class="form-group">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" id="basic-addon1"><i class="fas fa-lg fa-phone-alt"></i></label>
+                                        <label class="input-group-text" id="basic-addon1">
+                                            <i class="fas fa-lg fa-phone-alt"></i>
+                                        </label>
                                     </div>
                                     <input type="text" class="form-control ltr textInputColor" asp-for="PhoneNumber" placeholder="تلفن تماس را وارد کنید" aria-label="PhoneNumber" aria-describedby="basic-addon1">
                                     <span class="invalid-feedback text-left d-block text-danger font-weight-bolder developer-info rounded" asp-validation-for="PhoneNumber"></span>
@@ -70,9 +75,9 @@
                                              asp-text-box-template="<div class='input-group '><span class='input-group-prepend '><span class='input-group-text '><i class='fas fa-lock fa-lg'></i></span></span>{0}</div>"
                                              asp-validation-message-class="text-danger font-weight-bolder developer-info rounded"
                                              asp-refresh-button-class="btn-sm refreshcaptcha"
-                                             asp-use-noise="false" />
+                                             asp-use-noise="false"/>
                             </div>
-                            <button type="submit" class="btn btnStyle btn-lg btn-block mt-3"><i class='fas fa-paper-plane fa-lg'></i>&ensp; ارسال درخواست</button>
+                            <button type="submit" class="btn btnStyle btn-lg btn-block mt-3"><i class="fas fa-paper-plane fa-lg"></i>&ensp; ارسال درخواست</button>
                         </form>
                     </div>
                 </div>
@@ -83,7 +88,9 @@
                     <div class="card-body">
                         <div class="row">
                             <ol class="font-weight-bold alert alert-info" itemscope>
-                                <li class="mx-auto"><h6 class="alert alert-warning"><i class="fas fa-pen-nib"></i> این سـامــانه جهت ثبت درخـــواستهـــای نرم افزاری، سخت افزاری و لوازم مصرفی طراحی شده است جهت ثبت درخواست به نکات ذیل توجه فرمایید:</h6></li>
+                                <li class="mx-auto">
+                                    <h6 class="alert alert-warning"><i class="fas fa-pen-nib"></i> این سـامــانه جهت ثبت درخـــواستهـــای نرم افزاری، سخت افزاری و لوازم مصرفی طراحی شده است جهت ثبت درخواست به نکات ذیل توجه فرمایید:</h6>
+                                </li>
                                 <li>شماره امــوال می بایــست بـــــصورت صحیح وارد شود، مثال : 2142020025.</li>
                                 <li>شرح نیاز می بایست بصورت مختصر و مفید درج گردد.</li>
                                 <li>تلفن تماس می بایست مربوط به کاربر درخواست کننده باشد.</li>
@@ -96,7 +103,12 @@
                         <div class="row d-none d-md-block">
                             <div class="text-center special-footer font-weight-bold text-black developer-info">
                                 <p class="mb-1">
-                                    <span> مدیریت تعمیرات تجهیزات صنعتی و ماشین آلات فرایندی - سال @(_service.DateTimeService.ConvertToPersianDateTime(DateTime.Now).Year) </span><br /><span>پشتیبانی فنی:</span><br /><br /><span> <mark><b>محمد مهرنیا</b></mark></span>
+                                    <span> مدیریت تعمیرات تجهیزات صنعتی و ماشین آلات فرایندی - سال @(_service.DateTimeService.ConvertToPersianDateTime(DateTime.Now).Year) </span><br/><span>پشتیبانی فنی:</span><br/><br/>
+                                    <span>
+                                        <mark>
+                                            <b>محمد مهرنیا</b>
+                                        </mark>
+                                    </span>
                                 </p>
                             </div>
                         </div>
@@ -106,7 +118,8 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     <script src="~/js/validatorFunctions.min.js" async></script>
 }

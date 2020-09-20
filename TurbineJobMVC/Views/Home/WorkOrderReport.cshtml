@@ -1,7 +1,7 @@
 ﻿@model IList<WorkOrderDailyReportViewModel>
 @inject IService _service;
 @{
-    WorkOrderViewModel workorderInfo = ViewData["WorkOrderInfo"] as WorkOrderViewModel;
+    var workorderInfo = ViewData["WorkOrderInfo"] as WorkOrderViewModel;
 }
 @if (workorderInfo != null)
 {
@@ -11,28 +11,45 @@
             {
                 <span>
                     <b>@workorderInfo.AskerCode</b>
-                </span><span> درخواست شما<span> به کد رهگیری <b>@workorderInfo.WONo</b><span> به شرح </span><b>@Html.Raw(workorderInfo.NeedDescription)</b> <span> مربوط به اموال </span><b>@workorderInfo.Amval</b> </span>برای انجام به </span>
+                </span>
+                <span> درخواست شما<span> به کد رهگیری <b>@workorderInfo.WONo</b><span> به شرح </span><b>@Html.Raw(workorderInfo.NeedDescription)</b> <span> مربوط به اموال </span><b>@workorderInfo.Amval</b> </span>برای انجام به </span>
                 <span>
                     <b>@workorderInfo.OprCode</b>
-                </span><span> ارجاع داده شده است</span>
+                </span>
+                <span> ارجاع داده شده است</span>
             }
             else
             {
-                <span><b>@workorderInfo.AskerCode</b></span><span> برای درخواست شما<span> به کد رهگیری <b>@workorderInfo.WONo</b></span></span><span> به شرح </span><b>@workorderInfo.NeedDescription</b><span> مربوط به اموال </span><b>@workorderInfo.Amval</b>
-                <span><b>انجام دهنده کار تعیین نشده است</b></span>
+                <span>
+                    <b>@workorderInfo.AskerCode</b>
+                </span>
+                <span> برای درخواست شما<span> به کد رهگیری <b>@workorderInfo.WONo</b></span></span>
+                <span> به شرح </span>
+                <b>@workorderInfo.NeedDescription</b>
+                <span> مربوط به اموال </span>
+                <b>@workorderInfo.Amval</b>
+                <span>
+                    <b>انجام دهنده کار تعیین نشده است</b>
+                </span>
             }
             <button type="button" onClick="history.go(0)" class="btn-custom"> <i class="fas fa-sync-alt"></i> بروزرسانی آخرین وضعیت</button>
         </div>
     </div>
 
-    
+
     @if (workorderInfo.CustomerRate == null && workorderInfo.OprCode != "انجام دهنده تعيين نشده")
     {
         <div class="row">
             <div class="alert alert-primary mx-auto">
                 <form asp-controller="Home" asp-action="GetVote" method="get">
-                    <input type="hidden" value="@workorderInfo.WONo" name="Vote_Wono" id="Vote_Wono" />
-                    <span>خدمات ارائه شده توسط </span><b>@workorderInfo.OprCode</b><span> مورد تایید بنده بوده و <span><button class="btn btn-primary" type="submit">مشکل اعلان شده در درخواست کار مرتفع شده است</button></span>.</span>
+                    <input type="hidden" value="@workorderInfo.WONo" name="Vote_Wono" id="Vote_Wono"/>
+                    <span>خدمات ارائه شده توسط </span><b>@workorderInfo.OprCode</b>
+                    <span>
+                        مورد تایید بنده بوده و
+                        <span>
+                            <button class="btn btn-primary" type="submit">مشکل اعلان شده در درخواست کار مرتفع شده است</button>
+                        </span>.
+                    </span>
                 </form>
             </div>
         </div>
@@ -46,15 +63,17 @@
         {
             <div class="timeline">
 
-                @for (int i = 0; i <= Model.Count - 1; i++)
+                @for (var i = 0; i <= Model.Count - 1; i++)
                 {
                     <div class="containerTL @(i % 2 == 0 ? "rightTL" : "leftTL")">
                         <div class="contentTL rtl">
-                            <h6 class="text-secondary"><i class="fas fa-calendar-check"></i><span> @(Model[i].ReportDate)</span></h6>
+                            <h6 class="text-secondary">
+                                <i class="fas fa-calendar-check"></i><span> @(Model[i].ReportDate)</span>
+                            </h6>
                             <p>@Model[i].ReportComment</p>
                             <h6 class="text-primary">
                                 <i class="fas fa-person-carry"></i><span> انجام دهنده:</span>
-                                @if (String.IsNullOrEmpty(Model[i].MemberName))
+                                @if (string.IsNullOrEmpty(Model[i].MemberName))
                                 {
                                     @if (workorderInfo != null)
                                     {
@@ -75,17 +94,17 @@
                     </div>
                 }
             </div>
-            <partial name="footer" />
+            <partial name="footer"/>
         }
         else
         {
             <div class="alert alert-warning rtl mx-auto">تاکنون گزارش به ثبت نرسیده است</div>
-            <partial name="footer" />
+            <partial name="footer"/>
         }
     }
     else
     {
         <div class="alert alert-danger rtl mx-auto">کد رهگیری یا شماره اموال شما معتبر نمی باشد</div>
-        <partial name="footer" />
+        <partial name="footer"/>
     }
 </div>

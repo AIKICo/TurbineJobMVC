@@ -1,20 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TurbineJobMVC.CustomMiddleware
 {
     public class SitemapMiddleware
     {
-        private RequestDelegate _next;
+        private readonly RequestDelegate _next;
         private string _rootUrl;
+
         public SitemapMiddleware(RequestDelegate next)
         {
             _next = next;
@@ -28,24 +27,27 @@ namespace TurbineJobMVC.CustomMiddleware
                 var stream = context.Response.Body;
                 context.Response.StatusCode = 200;
                 context.Response.ContentType = "application/xml";
-                string sitemapContent = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">";
+                var sitemapContent = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">";
                 var controllers = Assembly.GetExecutingAssembly().GetTypes()
                     .Where(type => typeof(Controller).IsAssignableFrom(type)
-                    || type.Name.EndsWith("controller")).ToList();
+                                   || type.Name.EndsWith("controller")).ToList();
 
                 foreach (var controller in controllers)
                 {
-                    var methods = controller.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                    var methods = controller
+                        .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                         .Where(method => typeof(IActionResult).IsAssignableFrom(method.ReturnType));
                     foreach (var method in methods)
                     {
                         sitemapContent += "<url>";
                         sitemapContent += string.Format("<loc>{0}/{1}/{2}</loc>", _rootUrl,
-                        controller.Name.ToLower().Replace("controller", ""), method.Name.ToLower());
-                        sitemapContent += string.Format("<lastmod>{0}</lastmod>", DateTime.UtcNow.ToString("yyyy-MM-dd"));
+                            controller.Name.ToLower().Replace("controller", ""), method.Name.ToLower());
+                        sitemapContent += string.Format("<lastmod>{0}</lastmod>",
+                            DateTime.UtcNow.ToString("yyyy-MM-dd"));
                         sitemapContent += "</url>";
                     }
                 }
+
                 sitemapContent += "</urlset>";
                 using (var memoryStream = new MemoryStream())
                 {
@@ -57,7 +59,7 @@ namespace TurbineJobMVC.CustomMiddleware
             }
             else
             {
-                await this._next.Invoke(context);
+                await _next.Invoke(context);
             }
         }
     }

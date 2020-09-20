@@ -1,6 +1,5 @@
 using System;
 
-
 namespace TurbineJobMVC.Models.Entities
 {
     public class WorkOrderDailyReportTBL

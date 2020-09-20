@@ -10,45 +10,44 @@
         <div class="row">
             <div class="alert alert-info mx-auto">
                 <snap> درخواست کارهای ثبت شده برای اموال به شماره</snap><b>@Model.First().Amval </b>
-              
+
             </div>
         </div>
 
         <div class="row">
             <table class="table table-bordered table-hover searchcard text-center">
                 <thead class="thead-dark ">
-                    <tr>
-                        <th class="border border-white text-center " scope="col">شماره</th>
-                        <th class="border border-white text-center" scope="col">متقاضی</th>
-                        <th class="border border-white text-center" scope="col">تاریخ</th>
-                        <th class="border border-white text-center" scope="col">شرح نیاز</th>
-                        <th class="border border-white text-center" scope="col">انجام دهنده</th>
-                    </tr>
+                <tr>
+                    <th class="border border-white text-center " scope="col">شماره</th>
+                    <th class="border border-white text-center" scope="col">متقاضی</th>
+                    <th class="border border-white text-center" scope="col">تاریخ</th>
+                    <th class="border border-white text-center" scope="col">شرح نیاز</th>
+                    <th class="border border-white text-center" scope="col">انجام دهنده</th>
+                </tr>
                 </thead>
                 <tbody>
-               
-                    @foreach (var record in Model)
-                    {
-                        <tr class="border border-white">
-                            <td> <a target="_blank" asp-controller="Home" asp-action="WorkOrderReport" asp-route-WonoSearch="@record.WONo" class="btn btn-link">@record.WONo</a></td>
-                            <td>@record.OprCode</td>
-                            <td>@record.WODate</td>
-                            <td class="rtl">@record.NeedDescription</td>
-                            <td>@record.OprCode</td>
-                        </tr>
-                    }
+
+                @foreach (var record in Model)
+                {
+                    <tr class="border border-white">
+                        <td>
+                            <a target="_blank" asp-controller="Home" asp-action="WorkOrderReport" asp-route-WonoSearch="@record.WONo" class="btn btn-link">@record.WONo</a>
+                        </td>
+                        <td>@record.OprCode</td>
+                        <td>@record.WODate</td>
+                        <td class="rtl">@record.NeedDescription</td>
+                        <td>@record.OprCode</td>
+                    </tr>
+                }
                 </tbody>
-                
+
             </table>
-            <partial name="footer" />
+            <partial name="footer"/>
         </div>
     }
     else
     {
         <div class="alert alert-danger">اطلاعاتی یافت نشد</div>
-        <partial name="footer" />
+        <partial name="footer"/>
     }
 }
-
-
-

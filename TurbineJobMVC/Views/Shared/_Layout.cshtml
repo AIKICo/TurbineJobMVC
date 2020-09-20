@@ -4,75 +4,77 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="fa">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="سامانه ثبت درخواست رایانه های مدیریت تعمیرات تجهیزات و ماشین آلات فرآیندی" />
+    <meta name="description" content="سامانه ثبت درخواست رایانه های مدیریت تعمیرات تجهیزات و ماشین آلات فرآیندی"/>
     <meta name="application-name" content="TurbineJob">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="ثبت درخواست رایانه ای" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="ثبت درخواست رایانه ای"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
     <meta name="msapplication-starturl" content="/">
     <meta name="theme-color" content="#">
     <meta name="msapplication-TileColor" content="#">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="Content-Language" content="fa" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Language" content="fa"/>
     <title>@ViewData["Title"] - خدمات مکانیزه</title>
-    <link href="~/css/site.min.css" rel="stylesheet" async />
-    <link rel="manifest" href="~/manifest.json" />
+    <link href="~/css/site.min.css" rel="stylesheet" async/>
+    <link rel="manifest" href="~/manifest.json"/>
 </head>
 <body class="rtl">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 justify-content-between">
-            <a class="navbar-brand menu text-wrap" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/Image/Naft-Transparent-02.png" height="40" width="50" alt="@Html.Raw(Configuration.GetSection("AppSettings")["CompanyName"])" />@Html.Raw(Configuration.GetSection("AppSettings")["AppTitle"])</a>
-            <form class="form-inline my-auto d-inline col-md-2 col-sm-10 d-none d-sm-none d-md-block" asp-controller="Home" asp-action="SelectAction" method="get">
-                <div class="input-group">
-                    
-                    <input type="text" class="form-control ltr" id="txtWonoSearch"  name="txtSearch" value="@ViewData["searchKey"]" placeholder="رهگیری درخواست" data-toggle="tooltip" title="جهت پیگیری آخرین وضعیت درخواست ارسالی کد رهگیری  یا شماره اموال را اینجا وارد نمایید">                    
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-outline-success">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            <div class="row mb-2">
-                <div class="col-sm-9 mx-auto">
-                    <form asp-controller="Home" asp-action="Search" method="get">
-                        <div class="input-group">
-                            <input type="text" class="form-control textInputColor" id="txtSearch" name="id" placeholder="جهت جستجو اموال در اختیار، شماره پرسنلی خود را اینجا وارد و سپس بر روی دکمه جستجو کلیک نمایید">
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 justify-content-between">
+        <a class="navbar-brand menu text-wrap" asp-area="" asp-controller="Home" asp-action="Index">
+            <img src="~/Image/Naft-Transparent-02.png" height="40" width="50" alt="@Html.Raw(Configuration.GetSection("AppSettings")["CompanyName"])"/>@Html.Raw(Configuration.GetSection("AppSettings")["AppTitle"])
+        </a>
+        <form class="form-inline my-auto d-inline col-md-2 col-sm-10 d-none d-sm-none d-md-block" asp-controller="Home" asp-action="SelectAction" method="get">
+            <div class="input-group">
+
+                <input type="text" class="form-control ltr" id="txtWonoSearch" name="txtSearch" value="@ViewData["searchKey"]" placeholder="رهگیری درخواست" data-toggle="tooltip" title="جهت پیگیری آخرین وضعیت درخواست ارسالی کد رهگیری  یا شماره اموال را اینجا وارد نمایید">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-success">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
-            <section>
-                @RenderBody()
-            </section>
-        </main>
-    </div>
+        </form>
+    </nav>
+</header>
+<div class="container">
+    <main role="main" class="pb-3">
+        <div class="row mb-2">
+            <div class="col-sm-9 mx-auto">
+                <form asp-controller="Home" asp-action="Search" method="get">
+                    <div class="input-group">
+                        <input type="text" class="form-control textInputColor" id="txtSearch" name="id" placeholder="جهت جستجو اموال در اختیار، شماره پرسنلی خود را اینجا وارد و سپس بر روی دکمه جستجو کلیک نمایید">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <section>
+            @RenderBody()
+        </section>
+    </main>
+</div>
 
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" async></script>
-    <script src="~/js/fontawesome.min.js" async></script>
-    <script src="~/lib/toastr/build/toastr.min.js" async></script>
-    <script src="~/js/site.js" asp-append-version="true" async></script>
-    @*<script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" async></script>
+<script src="~/js/fontawesome.min.js" async></script>
+<script src="~/lib/toastr/build/toastr.min.js" async></script>
+<script src="~/js/site.js" asp-append-version="true" async></script>
+@*<script>
         $(document).ready(function () {
             if ((new URL(window.location.href)).searchParams.get("WonoSearch")!="")
                 $("#txtWonoSearch").val((new URL(window.location.href)).searchParams.get("WonoSearch"));
         })
     </script>*@
-    @RenderSection("Scripts", required: false)
+@RenderSection("Scripts", false)
 
 </body>
 </html>

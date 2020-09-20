@@ -32,8 +32,7 @@ namespace TurbineJobMVC.Models.Entities
         public int? Priority { get; set; }
         public int? diff { get; set; }
 
-        [Column(TypeName = "numeric(18,6)")]
-        public decimal? diffHour { get; set; }
+        [Column(TypeName = "numeric(18,6)")] public decimal? diffHour { get; set; }
 
         public string WoTypeName { get; set; }
         public int? ManDays { get; set; }

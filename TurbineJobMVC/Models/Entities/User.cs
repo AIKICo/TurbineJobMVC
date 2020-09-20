@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace TurbineJobMVC.Models.Entities
+﻿namespace TurbineJobMVC.Models.Entities
 {
     public class User
     {

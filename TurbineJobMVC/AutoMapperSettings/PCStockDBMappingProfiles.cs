@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MD.PersianDateTime.Standard;
-using TurbineJobMVC.Conventer;
 using TurbineJobMVC.Models.Entities;
 using TurbineJobMVC.Models.ViewModels;
 
@@ -15,10 +14,10 @@ namespace TurbineJobMVC.AutoMapperSettings
             CreateMap<WorkOrder, WorkOrderViewModel>().ReverseMap();
             CreateMap<TahvilForms, TahvilFormsViewModel>().ReverseMap();
             CreateMap<WorkOrderDailyReportTBL, WorkOrderDailyReportViewModel>()
-                .ForMember(q=>q.ReportDate, opt=> opt.MapFrom(q=> new PersianDateTime(q.ReportDate).ToLongDateTimeString()))
+                .ForMember(q => q.ReportDate,
+                    opt => opt.MapFrom(q => new PersianDateTime(q.ReportDate).ToLongDateTimeString()))
                 .ReverseMap();
             CreateMap<NotEndWorkOrderList, NotEndWorkOrderListViewModel>().ReverseMap();
         }
-
     }
 }

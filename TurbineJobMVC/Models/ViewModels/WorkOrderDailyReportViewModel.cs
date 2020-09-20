@@ -10,6 +10,5 @@ namespace TurbineJobMVC.Models.ViewModels
         public string ReportDate { get; set; }
         public string ReportComment { get; set; }
         public string MemberName { get; set; }
-
     }
 }

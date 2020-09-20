@@ -1,21 +1,15 @@
-﻿using MD.PersianDateTime.Standard;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
+using MD.PersianDateTime.Standard;
 
 namespace TurbineJobMVC.Services
 {
-    public class DateTimeService:IDateTimeService
+    public class DateTimeService : IDateTimeService
     {
-        public DateTimeService()
-        {
-
-        }
         public string ConvertToLongJalaliDateTimeString(DateTime? nullableDateTime)
         {
             return ConvertToPersianDateTime(nullableDateTime).ToLongDateTimeString();
         }
+
         public string ConvertToShortJalaliDateString(DateTime? nullableDateTime)
         {
             return ConvertToPersianDateTime(nullableDateTime).ToShortDateString();
@@ -25,6 +19,5 @@ namespace TurbineJobMVC.Services
         {
             return new PersianDateTime(nullableDateTime);
         }
-
     }
 }

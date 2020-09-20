@@ -13,66 +13,62 @@
                 <b>@Model.First().DeliverCode</b><span> به شماره پرسنلی <b>@Model.First().RegisterNo</b></span><span> اطلاعات اموال تحویلی شما به شرح ذیل می باشد</span>
             </div>
         </div>
-        
+
         <div class="row" id="searchGrid">
             <table class="table table-bordered table-hover searchcard text-center">
                 <thead class="thead-dark ">
-                    <tr>
-                        <th class="border border-white text-center " scope="col">*</th>
-                        <th class="border border-white text-center" scope="col">نوع</th>
-                        <th class="border border-white text-center" scope="col">شماره اموال</th>
-                        <th class="border border-white text-center" scope="col">درخواست فعال</th>
-                        <th class="border border-white text-center" scope="col"></th>
-                    </tr>
+                <tr>
+                    <th class="border border-white text-center " scope="col">*</th>
+                    <th class="border border-white text-center" scope="col">نوع</th>
+                    <th class="border border-white text-center" scope="col">شماره اموال</th>
+                    <th class="border border-white text-center" scope="col">درخواست فعال</th>
+                    <th class="border border-white text-center" scope="col"></th>
+                </tr>
                 </thead>
                 <tbody>
-                    @foreach (var form in Model)
-                    {
-                        <tr class="border border-white">
-                            <td class="align-middle"><i class="@form.Icon"></i></td>
-                            <td class="rtl align-middle">@form.PartName</td>
-                            <td class="align-middle">@form.AmvalNo</td>
-                            <td class="align-middle">
-                                @if (form.ActiveWono != null)
+                @foreach (var form in Model)
+                {
+                    <tr class="border border-white">
+                        <td class="align-middle">
+                            <i class="@form.Icon"></i>
+                        </td>
+                        <td class="rtl align-middle">@form.PartName</td>
+                        <td class="align-middle">@form.AmvalNo</td>
+                        <td class="align-middle">
+                            @if (form.ActiveWono != null)
+                            {
+                                <a asp-controller="Home" asp-action="WorkOrderReport" asp-route-WonoSearch="@form.ActiveWono" class="btn btn-link">@form.ActiveWono</a>
+                            }
+                        </td>
+                        <td class="align-middle">
+
+                            <div class="btn-group-sm rtl " role="group">
+                                @if (form.ActiveWono == null)
+
                                 {
-                                    <a asp-controller="Home" asp-action="WorkOrderReport" asp-route-WonoSearch="@form.ActiveWono" class="btn btn-link">@form.ActiveWono</a>
+                                    <a type="button" class="btn btn-link btn-sm" data-toggle="tooltip" data-placement="bottom" title="ثبت درخواست کار جدید" asp-controller="Home" asp-action="IndexByAR" asp-route-id="@form.AmvalNo"><i class="fas fa-plus-circle"></i> ثبت درخواست جدید</a>
+                                    <br style="line-height:0.25"/>
+                                    <a type="button" class="btn btn-link btn-sm" data-toggle="tooltip" data-placement="bottom" title="در صورت مشاهده مغایرت در لیست اموال تحت اختیار، جهت ثبت درخواست بررسی کلیک نمایید." asp-controller="Home" asp-action="IndexByARConflict" asp-route-id="@form.AmvalNo"><i class="fas fa-exclamation-circle"></i> اعلام مغایرت</a>
+                                    <br style="line-height:0.25"/>
                                 }
-                            </td>
-                            <td class="align-middle">
 
-                                <div class="btn-group-sm rtl " role="group">
-                                    @if (form.ActiveWono == null)
+                                @if (form.HasArchive ?? default)
+                                {
+                                    <a type="button" target="_blank" class="btn btn-link btn-sm" data-toggle="tooltip" data-placement="bottom" title="مشاهده سابقه درخواست ها" asp-controller="Home" asp-action="ArchiveWorkOrder" asp-route-id="@form.AmvalNo"><i class="fas fa-history"></i> آرشیو</a>
+                                }
+                            </div>
 
-                                    {
-                                        <a type="button" class="btn btn-link btn-sm" data-toggle="tooltip" data-placement="bottom" title="ثبت درخواست کار جدید" asp-controller="Home" asp-action="IndexByAR" asp-route-id="@form.AmvalNo"><i class="fas fa-plus-circle"></i> ثبت درخواست جدید</a>
-                                        <br style="line-height:0.25" />
-                                        <a type="button" class="btn btn-link btn-sm" data-toggle="tooltip" data-placement="bottom" title="در صورت مشاهده مغایرت در لیست اموال تحت اختیار، جهت ثبت درخواست بررسی کلیک نمایید." asp-controller="Home" asp-action="IndexByARConflict" asp-route-id="@form.AmvalNo"><i class="fas fa-exclamation-circle"></i> اعلام مغایرت</a>
-                                        <br style="line-height:0.25"/>
-                                    }
-
-                                    @if (form.HasArchive ?? default(bool))
-                                    {
-                                        <a type="button" target="_blank"  class="btn btn-link btn-sm" data-toggle="tooltip" data-placement="bottom" title="مشاهده سابقه درخواست ها" asp-controller="Home" asp-action="ArchiveWorkOrder" asp-route-id="@form.AmvalNo"><i class="fas fa-history"></i> آرشیو</a>
-
-                                     }
-                                </div>
-
-                            </td>
-                        </tr>
-                    }
+                        </td>
+                    </tr>
+                }
                 </tbody>
             </table>
-            <partial name="footer" />
+            <partial name="footer"/>
         </div>
     }
     else
     {
         <div class="alert alert-danger">اطلاعاتی یافت نشد</div>
-        <partial name="footer" />
+        <partial name="footer"/>
     }
 }
-
-
-
-
-

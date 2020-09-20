@@ -23,8 +23,9 @@
         public int DevilerCodeOrigin { get; set; }
         public string Icon { get; set; }
         public long? ActiveWono { get; set; }
+
         public bool
-            
+
             HasArchive { get; set; }
     }
 }

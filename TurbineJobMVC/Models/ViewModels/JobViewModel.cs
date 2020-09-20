@@ -10,8 +10,8 @@ namespace TurbineJobMVC.Models.ViewModels
         [Required(ErrorMessage = "شماره اموال را وارد نمایید.")]
         [RegularExpression(@"\d{10}", ErrorMessage = "شماره اموال را به صورت صحیح وارد نمایید مثال 2142020025")]
         [IsExistsAR(ErrorMessage = "شماره اموال وارد شده ثبت نشده است")]
-        [IsDublicateNotRateAR()]
-        [IsDublicateActiveAR()]
+        [IsDublicateNotRateAR]
+        [IsDublicateActiveAR]
         public string AR { get; set; }
 
         [Display(Name = "شرح نیاز")]
@@ -26,11 +26,10 @@ namespace TurbineJobMVC.Models.ViewModels
         [NotMapped]
         public string PhoneNumber { get; set; }
 
-        [Display(Name = "شرح نیاز")]
-        public string NeedDescription => $"{Description}\r\n(شماره تماس:{PhoneNumber})";
-        [NotMapped]
-        public bool defaultAR { get; set; }
-        [NotMapped]
-        public bool defaultDes { get; set; }
+        [Display(Name = "شرح نیاز")] public string NeedDescription => $"{Description}\r\n(شماره تماس:{PhoneNumber})";
+
+        [NotMapped] public bool defaultAR { get; set; }
+
+        [NotMapped] public bool defaultDes { get; set; }
     }
 }
