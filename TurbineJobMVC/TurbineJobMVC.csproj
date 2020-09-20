@@ -41,8 +41,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="RobotsTxtCore" Version="1.1.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
-    <PackageReference Include="Serilog.Sinks.RavenDB" Version="3.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
     <PackageReference Include="Wangkanai.Detection" Version="2.0.0" />
   </ItemGroup>

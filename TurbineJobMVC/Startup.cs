@@ -22,11 +22,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using Raven.Client.Documents;
-using Raven.Client.Http;
-using Serilog;
-using Serilog.Context;
-using Serilog.Debugging;
 using TurbineJobMVC.AutoMapperSettings;
 using TurbineJobMVC.BuilderExtensions;
 using TurbineJobMVC.Models;
@@ -37,8 +32,6 @@ namespace TurbineJobMVC
 {
     public class Startup
     {
-        private X509Certificate2 logServerCertificate;
-
         public Startup(
             IConfiguration configuration,
             IHostEnvironment host)
@@ -132,10 +125,8 @@ namespace TurbineJobMVC
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseResponseCompression();
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -157,33 +148,6 @@ namespace TurbineJobMVC
                     headers["Content-Type"] = mimeType;
                 }
             });
-            if (Convert.ToBoolean(Configuration.GetSection("RavenDBSettings:Enabled").Value))
-            {
-                SelfLog.Enable(msg => Debug.WriteLine(msg));
-                SelfLog.Enable(Console.Error);
-
-                Log.Logger = new LoggerConfiguration()
-                    .Enrich.FromLogContext()
-                    .MinimumLevel.Debug()
-                    .WriteTo.Console()
-                    .WriteTo.RavenDB(CreateRavenDocStore(), errorExpiration: TimeSpan.FromDays(90))
-                    .CreateLogger();
-                app.Use(async (httpContext, next) =>
-                {
-                    var username = httpContext.User.Identity.IsAuthenticated
-                        ? httpContext.User.Identity.Name
-                        : "anonymous";
-                    LogContext.PushProperty("User", username);
-                    var ip = httpContext.Connection.RemoteIpAddress.ToString();
-                    LogContext.PushProperty("IP", !string.IsNullOrWhiteSpace(ip) ? ip : "unknown");
-
-                    await next.Invoke();
-                });
-
-                loggerFactory.AddSerilog();
-                Log.Information("Startup");
-            }
-
             app.UseSession();
             app.UseResponseCaching();
             app.UseStatusCodePagesWithRedirects("/Home/Error");
@@ -208,42 +172,12 @@ namespace TurbineJobMVC
                             .AddCrawlDelay(TimeSpan.FromSeconds(10))
                             .Allow("/")
                     ));
-            //.AddSitemap($"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/sitemap.xml"));
-            app.UseSerilogRequestLogging();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     "default",
                     "{controller=Home}/{action=Index}/{id?}");
             });
-        }
-
-        private IDocumentStore CreateRavenDocStore()
-        {
-            RequestExecutor.RemoteCertificateValidationCallback += CertificateCallback;
-            if (!hostEnvironment.IsDevelopment())
-                logServerCertificate =
-                    new X509Certificate2($"{hostEnvironment.ContentRootPath}/wwwroot/certificate/TurbineJobLogs.pfx",
-                        "Mveyma6303$");
-            else
-                logServerCertificate =
-                    new X509Certificate2(
-                        $"{hostEnvironment.ContentRootPath}/wwwroot/certificate/TurbineJobMVC.pfx",
-                        "Mveyma6303$");
-            var docStore = new DocumentStore
-            {
-                Urls = new[] {Configuration.GetSection("RavenDBSettings:Server").Value},
-                Database = Configuration.GetSection("RavenDBSettings:CollectionName").Value,
-                Certificate = logServerCertificate
-            };
-            docStore.Initialize();
-            return docStore;
-        }
-
-        private static bool CertificateCallback(object sender, X509Certificate cert, X509Chain chain,
-            SslPolicyErrors errors)
-        {
-            return true;
         }
     }
 }

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Serilog;
 
 namespace TurbineJobMVC
 {
@@ -12,7 +11,7 @@ namespace TurbineJobMVC
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        private static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostContext, configApp) =>
@@ -21,7 +20,6 @@ namespace TurbineJobMVC
                     configApp.AddEnvironmentVariables("ASPNETCORE_");
                     configApp.AddCommandLine(args);
                 })
-                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
         }
     }
