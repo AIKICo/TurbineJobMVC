@@ -3,6 +3,7 @@ RUN apt-get update && apt-get install -y vim apt-utils libgdiplus libc6-dev tzda
 ENV TZ=Asia/Tehran
 ENV DEBIAN_FRONTEND=noninteractive
 ENV ASPNETCORE_ENVIRONMENT=Production
+RUN export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 RUN mkdir -p /etc/keys
 COPY ./bin/Release/netcoreapp3.1/publish	/publish
 WORKDIR /publish
